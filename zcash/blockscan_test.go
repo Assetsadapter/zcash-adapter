@@ -34,7 +34,7 @@ func TestGetBTCBlockHeight(t *testing.T) {
 }
 
 func TestBTCBlockScanner_GetCurrentBlockHeight(t *testing.T) {
-	bs := NewBTCBlockScanner(tw)
+	bs := NewZECBlockScanner(tw)
 	header, _ := bs.GetCurrentBlockHeader()
 	t.Logf("GetCurrentBlockHeight height = %d \n", header.Height)
 	t.Logf("GetCurrentBlockHeight hash = %v \n", header.Hash)
@@ -52,7 +52,7 @@ func TestGetLocalNewBlock(t *testing.T) {
 }
 
 func TestSaveLocalBlockHeight(t *testing.T) {
-	bs := NewBTCBlockScanner(tw)
+	bs := NewZECBlockScanner(tw)
 	header, _ := bs.GetCurrentBlockHeader()
 	t.Logf("SaveLocalBlockHeight height = %d \n", header.Height)
 	t.Logf("GetLocalBlockHeight hash = %v \n", header.Hash)
@@ -70,7 +70,7 @@ func TestGetBlockHash(t *testing.T) {
 }
 
 func TestGetBlock(t *testing.T) {
-	raw, err := tw.GetBlock("000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506")
+	raw, err := tw.GetBlock("08260a1ab5d0e7640d12cd5812c2579fc6aa74507c1afdbd3b08aab08e83a46d")
 	if err != nil {
 		t.Errorf("GetBlock failed unexpected error: %v\n", err)
 		return
@@ -126,18 +126,18 @@ func TestGetTxIDsInMemPool(t *testing.T) {
 	t.Logf("GetTxIDsInMemPool = %v \n", txids)
 }
 
-func TestBTCBlockScanner_scanning(t *testing.T) {
+func TestZECBlockScanner_scanning(t *testing.T) {
 
 	//accountID := "WDHupMjR3cR2wm97iDtKajxSPCYEEddoek"
 	//address := "miphUAzHHeM1VXGSFnw6owopsQW3jAQZAk"
 
 	//wallet, err := tw.GetWalletInfo(accountID)
 	//if err != nil {
-	//	t.Errorf("BTCBlockScanner_scanning failed unexpected error: %v\n", err)
+	//	t.Errorf("ZECBlockScanner_scanning failed unexpected error: %v\n", err)
 	//	return
 	//}
 
-	bs := NewBTCBlockScanner(tw)
+	bs := NewZECBlockScanner(tw)
 
 	//bs.DropRechargeRecords(accountID)
 
@@ -149,7 +149,7 @@ func TestBTCBlockScanner_scanning(t *testing.T) {
 	bs.ScanBlockTask()
 }
 
-func TestBTCBlockScanner_Run(t *testing.T) {
+func TestZECBlockScanner_Run(t *testing.T) {
 
 	var (
 		endRunning = make(chan bool, 1)
@@ -160,11 +160,11 @@ func TestBTCBlockScanner_Run(t *testing.T) {
 
 	//wallet, err := tw.GetWalletInfo(accountID)
 	//if err != nil {
-	//	t.Errorf("BTCBlockScanner_Run failed unexpected error: %v\n", err)
+	//	t.Errorf("ZECBlockScanner_Run failed unexpected error: %v\n", err)
 	//	return
 	//}
 
-	bs := NewBTCBlockScanner(tw)
+	bs := NewZECBlockScanner(tw)
 
 	//bs.DropRechargeRecords(accountID)
 
@@ -178,7 +178,7 @@ func TestBTCBlockScanner_Run(t *testing.T) {
 
 }
 
-func TestBTCBlockScanner_ScanBlock(t *testing.T) {
+func TestZECBlockScanner_ScanBlock(t *testing.T) {
 
 	//accountID := "WDHupMjR3cR2wm97iDtKajxSPCYEEddoek"
 	//address := "msnYsBdBXQZqYYqNNJZsjShzwCx9fJVSin"
@@ -188,7 +188,7 @@ func TestBTCBlockScanner_ScanBlock(t *testing.T) {
 	bs.ScanBlock(1384961)
 }
 
-func TestBTCBlockScanner_ExtractTransaction(t *testing.T) {
+func TestZECBlockScanner_ExtractTransaction(t *testing.T) {
 
 	//accountID := "WDHupMjR3cR2wm97iDtKajxSPCYEEddoek"
 	//address := "msHemmfSZ3au6h9S1annGcTGrTVryRbSFV"
@@ -222,9 +222,9 @@ func TestWallet_GetRecharges(t *testing.T) {
 	//}
 }
 
-//func TestBTCBlockScanner_DropRechargeRecords(t *testing.T) {
+//func TestZECBlockScanner_DropRechargeRecords(t *testing.T) {
 //	accountID := "W4ruoAyS5HdBMrEeeHQTBxo4XtaAixheXQ"
-//	bs := NewBTCBlockScanner(tw)
+//	bs := NewZECBlockScanner(tw)
 //	bs.DropRechargeRecords(accountID)
 //}
 
@@ -240,8 +240,8 @@ func TestGetUnscanRecords(t *testing.T) {
 	}
 }
 
-func TestBTCBlockScanner_RescanFailedRecord(t *testing.T) {
-	bs := NewBTCBlockScanner(tw)
+func TestZECBlockScanner_RescanFailedRecord(t *testing.T) {
+	bs := NewZECBlockScanner(tw)
 	bs.RescanFailedRecord()
 }
 
@@ -253,9 +253,9 @@ func TestFullAddress(t *testing.T) {
 	}
 }
 
-func TestBTCBlockScanner_GetTransactionsByAddress(t *testing.T) {
+func TestZECBlockScanner_GetTransactionsByAddress(t *testing.T) {
 	coin := openwallet.Coin{
-		Symbol:     "BTC",
+		Symbol:     "ZEC",
 		IsContract: false,
 	}
 	txExtractDatas, err := tw.Blockscanner.GetTransactionsByAddress(0, 50, coin, "2N7Mh6PLX39japSF76r2MAf7wT7WKU5TdpK")

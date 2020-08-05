@@ -27,14 +27,10 @@ func init() {
 
 }
 
-//var (
-//	AddressDecoder = &openwallet.AddressDecoder{
-//		PrivateKeyToWIF:    PrivateKeyToWIF,
-//		PublicKeyToAddress: PublicKeyToAddress,
-//		WIFToPrivateKey:    WIFToPrivateKey,
-//		RedeemScriptToAddress: RedeemScriptToAddress,
-//	}
-//)
+var (
+	zcash_mainetAddressP2PKH = addressEncoder.AddressType{"base58", addressEncoder.BTCAlphabet, "doubleSHA256", "h160", 20, []byte{0x1c, 0xb8}, nil}
+	zcash_testnetAddressP2PKH = addressEncoder.AddressType{"base58", addressEncoder.BTCAlphabet, "doubleSHA256", "h160", 20, []byte{0x1D,  0x25}, nil}
+)
 
 type AddressDecoder interface {
 	openwallet.AddressDecoder
@@ -60,12 +56,6 @@ func (decoder *addressDecoder) PrivateKeyToWIF(priv []byte, isTestnet bool) (str
 		cfg = addressEncoder.BTC_testnetPrivateWIFCompressed
 	}
 
-	//privateKey, _ := btcec.PrivKeyFromBytes(btcec.S256(), priv)
-	//wif, err := btcutil.NewWIF(privateKey, &cfg, true)
-	//if err != nil {
-	//	return "", err
-	//}
-
 	wif := addressEncoder.AddressEncode(priv, cfg)
 
 	return wif, nil
@@ -75,16 +65,10 @@ func (decoder *addressDecoder) PrivateKeyToWIF(priv []byte, isTestnet bool) (str
 //PublicKeyToAddress 公钥转地址
 func (decoder *addressDecoder) PublicKeyToAddress(pub []byte, isTestnet bool) (string, error) {
 
-	cfg := addressEncoder.BTC_mainnetAddressP2PKH
+	cfg := zcash_mainetAddressP2PKH
 	if decoder.wm.Config.IsTestNet {
-		cfg = addressEncoder.BTC_testnetAddressP2PKH
+		cfg = zcash_testnetAddressP2PKH
 	}
-
-	//pkHash := btcutil.Hash160(pub)
-	//address, err :=  btcutil.NewAddressPubKeyHash(pkHash, &cfg)
-	//if err != nil {
-	//	return "", err
-	//}
 
 	pkHash := owcrypt.Hash(pub, 0, owcrypt.HASH_ALG_HASH160)
 

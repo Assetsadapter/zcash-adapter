@@ -19,6 +19,3 @@ require (
 	github.com/shopspring/decimal v0.0.0-20180709203117-cd690d0c9e24
 	github.com/tidwall/gjson v1.2.1
 )
-
-//replace github.com/blocktree/openwallet => ../../openwallet
-//replace github.com/blocktree/go-owcdrivers => ../../go-owcdrivers

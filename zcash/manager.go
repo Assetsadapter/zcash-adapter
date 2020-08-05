@@ -54,7 +54,7 @@ type WalletManager struct {
 	ExplorerClient  *Explorer                     // 浏览器API客户端
 	Config          *WalletConfig                 //钱包管理配置
 	WalletsInSum    map[string]*openwallet.Wallet //参与汇总的钱包
-	Blockscanner    *BTCBlockScanner              //区块扫描器
+	Blockscanner    *ZECBlockScanner              //区块扫描器
 	Decoder         AddressDecoder                //地址编码器
 	TxDecoder       openwallet.TransactionDecoder //交易单编码器
 	Log             *log.OWLogger                 //日志工具
@@ -69,7 +69,7 @@ func NewWalletManager() *WalletManager {
 	//参与汇总的钱包
 	wm.WalletsInSum = make(map[string]*openwallet.Wallet)
 	//区块扫描器
-	wm.Blockscanner = NewBTCBlockScanner(&wm)
+	wm.Blockscanner = NewZECBlockScanner(&wm)
 	wm.Decoder = NewAddressDecoder(&wm)
 	wm.TxDecoder = NewTransactionDecoder(&wm)
 	wm.Log = log.NewOWLogger(wm.Symbol())

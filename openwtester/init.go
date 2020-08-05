@@ -1,7 +1,7 @@
 package openwtester
 
 import (
-	"github.com/blocktree/bitcoin-adapter/zcash"
+	"github.com/Assetsadapter/zcash-adapter/zcash"
 	"github.com/blocktree/openwallet/log"
 	"github.com/blocktree/openwallet/openw"
 )

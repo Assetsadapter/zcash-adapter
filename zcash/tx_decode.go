@@ -19,7 +19,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"github.com/blocktree/go-owcdrivers/btcTransaction"
+	"github.com/Assetsadapter/zcash-adapter/zecTransaction"
 	"github.com/blocktree/go-owcdrivers/omniTransaction"
 	"github.com/blocktree/openwallet/common"
 	"github.com/blocktree/openwallet/openwallet"
@@ -46,7 +46,7 @@ func (decoder *TransactionDecoder) CreateRawTransaction(wrapper openwallet.Walle
 	if rawTx.Coin.IsContract {
 		return decoder.CreateOmniRawTransaction(wrapper, rawTx)
 	} else {
-		return decoder.CreateBTCRawTransaction(wrapper, rawTx)
+		return decoder.CreateZECRawTransaction(wrapper, rawTx)
 	}
 }
 
@@ -55,7 +55,7 @@ func (decoder *TransactionDecoder) SignRawTransaction(wrapper openwallet.WalletD
 	if rawTx.Coin.IsContract {
 		return decoder.SignOmniRawTransaction(wrapper, rawTx)
 	} else {
-		return decoder.SignBTCRawTransaction(wrapper, rawTx)
+		return decoder.SignZECRawTransaction(wrapper, rawTx)
 	}
 }
 
@@ -64,7 +64,7 @@ func (decoder *TransactionDecoder) VerifyRawTransaction(wrapper openwallet.Walle
 	if rawTx.Coin.IsContract {
 		return decoder.VerifyOmniRawTransaction(wrapper, rawTx)
 	} else {
-		return decoder.VerifyBTCRawTransaction(wrapper, rawTx)
+		return decoder.VerifyZECRawTransaction(wrapper, rawTx)
 	}
 }
 
@@ -78,7 +78,7 @@ func (decoder *TransactionDecoder) CreateSummaryRawTransaction(wrapper openwalle
 	if sumRawTx.Coin.IsContract {
 		rawTxWithErrArray, err = decoder.CreateOmniSummaryRawTransaction(wrapper, sumRawTx)
 	} else {
-		rawTxWithErrArray, err = decoder.CreateBTCSummaryRawTransaction(wrapper, sumRawTx)
+		rawTxWithErrArray, err = decoder.CreateZECSummaryRawTransaction(wrapper, sumRawTx)
 	}
 	if err != nil {
 		return nil, err
@@ -140,10 +140,10 @@ func (decoder *TransactionDecoder) SubmitRawTransaction(wrapper openwallet.Walle
 	return tx, nil
 }
 
-////////////////////////// BTC implement //////////////////////////
+////////////////////////// ZEC implement //////////////////////////
 
 //CreateRawTransaction 创建交易单
-func (decoder *TransactionDecoder) CreateBTCRawTransaction(wrapper openwallet.WalletDAI, rawTx *openwallet.RawTransaction) error {
+func (decoder *TransactionDecoder) CreateZECRawTransaction(wrapper openwallet.WalletDAI, rawTx *openwallet.RawTransaction) error {
 
 	var (
 		usedUTXO     []*Unspent
@@ -301,7 +301,7 @@ func (decoder *TransactionDecoder) CreateBTCRawTransaction(wrapper openwallet.Wa
 		//outputAddrs[changeAddress] = changeAmount.StringFixed(decoder.wm.Decimal())
 	}
 
-	err = decoder.createBTCRawTransaction(wrapper, rawTx, usedUTXO, outputAddrs)
+	err = decoder.createZECRawTransaction(wrapper, rawTx, usedUTXO, outputAddrs)
 	if err != nil {
 		return err
 	}
@@ -310,7 +310,7 @@ func (decoder *TransactionDecoder) CreateBTCRawTransaction(wrapper openwallet.Wa
 }
 
 //SignRawTransaction 签名交易单
-func (decoder *TransactionDecoder) SignBTCRawTransaction(wrapper openwallet.WalletDAI, rawTx *openwallet.RawTransaction) error {
+func (decoder *TransactionDecoder) SignZECRawTransaction(wrapper openwallet.WalletDAI, rawTx *openwallet.RawTransaction) error {
 
 	if rawTx.Signatures == nil || len(rawTx.Signatures) == 0 {
 		//this.wm.Log.Std.Error("len of signatures error. ")
@@ -334,11 +334,11 @@ func (decoder *TransactionDecoder) SignBTCRawTransaction(wrapper openwallet.Wall
 			decoder.wm.Log.Debug("privateKey:", hex.EncodeToString(keyBytes))
 
 			//privateKeys = append(privateKeys, keyBytes)
-			txHash := btcTransaction.TxHash{
+			txHash := zecTransaction.TxHash{
 				Hash: keySignature.Message,
-				Normal: &btcTransaction.NormalTx{
+				Normal: &zecTransaction.NormalTx{
 					Address: keySignature.Address.Address,
-					SigType: btcTransaction.SigHashAll,
+					SigType: zecTransaction.SigHashAll,
 				},
 			}
 			//transHash = append(transHash, txHash)
@@ -347,7 +347,7 @@ func (decoder *TransactionDecoder) SignBTCRawTransaction(wrapper openwallet.Wall
 
 			//签名交易
 			/////////交易单哈希签名
-			sigPub, err := btcTransaction.SignRawTransactionHash(txHash.GetTxHashHex(), keyBytes)
+			sigPub, err := zecTransaction.SignRawTransactionHash(txHash.GetTxHashHex(), keyBytes)
 			if err != nil {
 				return fmt.Errorf("transaction hash sign failed, unexpected error: %v", err)
 			} else {
@@ -376,7 +376,7 @@ func (decoder *TransactionDecoder) SignBTCRawTransaction(wrapper openwallet.Wall
 }
 
 //VerifyRawTransaction 验证交易单，验证交易单并返回加入签名后的交易单
-func (decoder *TransactionDecoder) VerifyBTCRawTransaction(wrapper openwallet.WalletDAI, rawTx *openwallet.RawTransaction) error {
+func (decoder *TransactionDecoder) VerifyZECRawTransaction(wrapper openwallet.WalletDAI, rawTx *openwallet.RawTransaction) error {
 
 	//先加载是否有配置文件
 	//err := decoder.wm.LoadConfig()
@@ -385,11 +385,11 @@ func (decoder *TransactionDecoder) VerifyBTCRawTransaction(wrapper openwallet.Wa
 	//}
 
 	var (
-		txUnlocks  = make([]btcTransaction.TxUnlock, 0)
+		txUnlocks  = make([]zecTransaction.TxUnlock, 0)
 		emptyTrans = rawTx.RawHex
-		//sigPub     = make([]btcTransaction.SignaturePubkey, 0)
-		transHash     = make([]btcTransaction.TxHash, 0)
-		addressPrefix btcTransaction.AddressPrefix
+		//sigPub     = make([]zecTransaction.SignaturePubkey, 0)
+		transHash     = make([]zecTransaction.TxHash, 0)
+		addressPrefix zecTransaction.AddressPrefix
 	)
 
 	if rawTx.Signatures == nil || len(rawTx.Signatures) == 0 {
@@ -406,18 +406,18 @@ func (decoder *TransactionDecoder) VerifyBTCRawTransaction(wrapper openwallet.Wa
 			signature, _ := hex.DecodeString(keySignature.Signature)
 			pubkey, _ := hex.DecodeString(keySignature.Address.PublicKey)
 
-			signaturePubkey := btcTransaction.SignaturePubkey{
+			signaturePubkey := zecTransaction.SignaturePubkey{
 				Signature: signature,
 				Pubkey:    pubkey,
 			}
 
 			//sigPub = append(sigPub, signaturePubkey)
 
-			txHash := btcTransaction.TxHash{
+			txHash := zecTransaction.TxHash{
 				Hash: keySignature.Message,
-				Normal: &btcTransaction.NormalTx{
+				Normal: &zecTransaction.NormalTx{
 					Address: keySignature.Address.Address,
-					SigType: btcTransaction.SigHashAll,
+					SigType: zecTransaction.SigHashAll,
 					SigPub:  signaturePubkey,
 				},
 			}
@@ -434,7 +434,7 @@ func (decoder *TransactionDecoder) VerifyBTCRawTransaction(wrapper openwallet.Wa
 		return errors.New("Invalid transaction hex data!")
 	}
 
-	trx, err := btcTransaction.DecodeRawTransaction(txBytes, decoder.wm.Config.SupportSegWit)
+	trx, err := zecTransaction.DecodeRawTransaction(txBytes, decoder.wm.Config.SupportSegWit)
 	if err != nil {
 		return errors.New("Invalid transaction data! ")
 	}
@@ -446,9 +446,9 @@ func (decoder *TransactionDecoder) VerifyBTCRawTransaction(wrapper openwallet.Wa
 			return err
 		}
 
-		txUnlock := btcTransaction.TxUnlock{
+		txUnlock := zecTransaction.TxUnlock{
 			LockScript: utxo.ScriptPubKey,
-			SigType:    btcTransaction.SigHashAll}
+			SigType:    zecTransaction.SigHashAll}
 		txUnlocks = append(txUnlocks, txUnlock)
 
 	}
@@ -457,7 +457,7 @@ func (decoder *TransactionDecoder) VerifyBTCRawTransaction(wrapper openwallet.Wa
 
 	////////填充签名结果到空交易单
 	//  传入TxUnlock结构体的原因是： 解锁向脚本支付的UTXO时需要对应地址的赎回脚本， 当前案例的对应字段置为 "" 即可
-	signedTrans, err := btcTransaction.InsertSignatureIntoEmptyTransaction(emptyTrans, transHash, txUnlocks, decoder.wm.Config.SupportSegWit)
+	signedTrans, err := zecTransaction.InsertSignatureIntoEmptyTransaction(emptyTrans, transHash, txUnlocks, decoder.wm.Config.SupportSegWit)
 	if err != nil {
 		return fmt.Errorf("transaction compose signatures failed")
 	}
@@ -474,7 +474,7 @@ func (decoder *TransactionDecoder) VerifyBTCRawTransaction(wrapper openwallet.Wa
 
 	/////////验证交易单
 	//验证时，对于公钥哈希地址，需要将对应的锁定脚本传入TxUnlock结构体
-	pass := btcTransaction.VerifyRawTransaction(signedTrans, txUnlocks, decoder.wm.Config.SupportSegWit, addressPrefix)
+	pass := zecTransaction.VerifyRawTransaction(signedTrans, txUnlocks, decoder.wm.Config.SupportSegWit, addressPrefix)
 	if pass {
 		decoder.wm.Log.Debug("transaction verify passed")
 		rawTx.IsCompleted = true
@@ -817,7 +817,7 @@ func (decoder *TransactionDecoder) SignOmniRawTransaction(wrapper openwallet.Wal
 					Hash: keySignature.Message,
 					Normal: &omniTransaction.NormalTx{
 						Address: keySignature.Address.Address,
-						SigType: btcTransaction.SigHashAll,
+						SigType: zecTransaction.SigHashAll,
 					},
 				}
 				//transHash = append(transHash, txHash)
@@ -867,7 +867,7 @@ func (decoder *TransactionDecoder) VerifyOmniRawTransaction(wrapper openwallet.W
 	var (
 		txUnlocks  = make([]omniTransaction.TxUnlock, 0)
 		emptyTrans = rawTx.RawHex
-		//sigPub     = make([]btcTransaction.SignaturePubkey, 0)
+		//sigPub     = make([]zecTransaction.SignaturePubkey, 0)
 		transHash     = make([]omniTransaction.TxHash, 0)
 		addressPrefix omniTransaction.AddressPrefix
 	)
@@ -895,7 +895,7 @@ func (decoder *TransactionDecoder) VerifyOmniRawTransaction(wrapper openwallet.W
 				Hash: keySignature.Message,
 				Normal: &omniTransaction.NormalTx{
 					Address: keySignature.Address.Address,
-					SigType: btcTransaction.SigHashAll,
+					SigType: zecTransaction.SigHashAll,
 					SigPub:  signaturePubkey,
 				},
 			}
@@ -926,7 +926,7 @@ func (decoder *TransactionDecoder) VerifyOmniRawTransaction(wrapper openwallet.W
 
 		txUnlock := omniTransaction.TxUnlock{
 			LockScript: utxo.ScriptPubKey,
-			SigType:    btcTransaction.SigHashAll}
+			SigType:    zecTransaction.SigHashAll}
 		txUnlocks = append(txUnlocks, txUnlock)
 
 		transHash = resetTransHashFunc(transHash, utxo.Addr, i)
@@ -979,8 +979,8 @@ func (decoder *TransactionDecoder) VerifyOmniRawTransaction(wrapper openwallet.W
 	return nil
 }
 
-//CreateBTCSummaryRawTransaction 创建BTC汇总交易
-func (decoder *TransactionDecoder) CreateBTCSummaryRawTransaction(wrapper openwallet.WalletDAI, sumRawTx *openwallet.SummaryRawTransaction) ([]*openwallet.RawTransactionWithError, error) {
+//CreateZECSummaryRawTransaction 创建ZEC汇总交易
+func (decoder *TransactionDecoder) CreateZECSummaryRawTransaction(wrapper openwallet.WalletDAI, sumRawTx *openwallet.SummaryRawTransaction) ([]*openwallet.RawTransactionWithError, error) {
 
 	var (
 		feesRate       = decimal.New(0, 0)
@@ -1121,7 +1121,7 @@ func (decoder *TransactionDecoder) CreateBTCSummaryRawTransaction(wrapper openwa
 					Required: 1,
 				}
 
-				createErr = decoder.createBTCRawTransaction(wrapper, rawTx, sumUnspents, outputAddrs)
+				createErr = decoder.createZECRawTransaction(wrapper, rawTx, sumUnspents, outputAddrs)
 				rawTxWithErr := &openwallet.RawTransactionWithError{
 					RawTx: rawTx,
 					Error: openwallet.ConvertError(createErr),
@@ -1143,8 +1143,8 @@ func (decoder *TransactionDecoder) CreateBTCSummaryRawTransaction(wrapper openwa
 	return rawTxArray, nil
 }
 
-//createBTCRawTransaction 创建BTC原始交易单
-func (decoder *TransactionDecoder) createBTCRawTransaction(
+//createZECRawTransaction 创建ZEC原始交易单
+func (decoder *TransactionDecoder) createZECRawTransaction(
 	wrapper openwallet.WalletDAI,
 	rawTx *openwallet.RawTransaction,
 	usedUTXO []*Unspent,
@@ -1153,16 +1153,16 @@ func (decoder *TransactionDecoder) createBTCRawTransaction(
 
 	var (
 		err              error
-		vins             = make([]btcTransaction.Vin, 0)
-		vouts            = make([]btcTransaction.Vout, 0)
-		txUnlocks        = make([]btcTransaction.TxUnlock, 0)
+		vins             = make([]zecTransaction.Vin, 0)
+		vouts            = make([]zecTransaction.Vout, 0)
+		txUnlocks        = make([]zecTransaction.TxUnlock, 0)
 		totalSend        = decimal.New(0, 0)
 		destinations     = make([]string, 0)
 		accountTotalSent = decimal.Zero
 		txFrom           = make([]string, 0)
 		txTo             = make([]string, 0)
 		accountID        = rawTx.Account.AccountID
-		addressPrefix    btcTransaction.AddressPrefix
+		addressPrefix    zecTransaction.AddressPrefix
 	)
 
 	if len(usedUTXO) == 0 {
@@ -1194,10 +1194,10 @@ func (decoder *TransactionDecoder) createBTCRawTransaction(
 
 	//装配输入
 	for _, utxo := range usedUTXO {
-		in := btcTransaction.Vin{utxo.TxID, uint32(utxo.Vout)}
+		in := zecTransaction.Vin{utxo.TxID, uint32(utxo.Vout)}
 		vins = append(vins, in)
 
-		txUnlock := btcTransaction.TxUnlock{LockScript: utxo.ScriptPubKey, SigType: btcTransaction.SigHashAll}
+		txUnlock := zecTransaction.TxUnlock{LockScript: utxo.ScriptPubKey, SigType: zecTransaction.SigHashAll}
 		txUnlocks = append(txUnlocks, txUnlock)
 
 		txFrom = append(txFrom, fmt.Sprintf("%s:%s", utxo.Address, utxo.Amount))
@@ -1207,7 +1207,7 @@ func (decoder *TransactionDecoder) createBTCRawTransaction(
 	for to, amount := range to {
 		txTo = append(txTo, fmt.Sprintf("%s:%s", to, amount.String()))
 		amount = amount.Shift(decoder.wm.Decimal())
-		out := btcTransaction.Vout{to, uint64(amount.IntPart())}
+		out := zecTransaction.Vout{to, uint64(amount.IntPart())}
 		vouts = append(vouts, out)
 	}
 
@@ -1224,7 +1224,7 @@ func (decoder *TransactionDecoder) createBTCRawTransaction(
 	}
 
 	/////////构建空交易单
-	emptyTrans, err := btcTransaction.CreateEmptyRawTransaction(vins, vouts, lockTime, replaceable, addressPrefix)
+	emptyTrans, err := zecTransaction.CreateEmptyRawTransaction(vins, vouts, lockTime, replaceable, addressPrefix)
 
 	if err != nil {
 		return fmt.Errorf("create transaction failed, unexpected error: %v", err)
@@ -1232,7 +1232,7 @@ func (decoder *TransactionDecoder) createBTCRawTransaction(
 	}
 
 	////////构建用于签名的交易单哈希
-	transHash, err := btcTransaction.CreateRawTransactionHashForSig(emptyTrans, txUnlocks, decoder.wm.Config.SupportSegWit, addressPrefix)
+	transHash, err := zecTransaction.CreateRawTransactionHashForSig(emptyTrans, txUnlocks, decoder.wm.Config.SupportSegWit, addressPrefix)
 	if err != nil {
 		return fmt.Errorf("create transaction hash for sig failed, unexpected error: %v", err)
 		//decoder.wm.Log.Error("获取待签名交易单哈希失败")
@@ -1365,7 +1365,7 @@ func (decoder *TransactionDecoder) createOmniRawTransaction(
 		in := omniTransaction.Vin{utxo.TxID, uint32(utxo.Vout)}
 		vins = append(vins, in)
 
-		txUnlock := omniTransaction.TxUnlock{LockScript: utxo.ScriptPubKey, SigType: btcTransaction.SigHashAll}
+		txUnlock := omniTransaction.TxUnlock{LockScript: utxo.ScriptPubKey, SigType: zecTransaction.SigHashAll}
 		txUnlocks = append(txUnlocks, txUnlock)
 
 		//txFrom = append(txFrom, fmt.Sprintf("%s:%s", utxo.Address, utxo.Amount))
@@ -1731,7 +1731,7 @@ func (decoder *TransactionDecoder) CreateSummaryRawTransactionWithError(wrapper 
 	if sumRawTx.Coin.IsContract {
 		return decoder.CreateOmniSummaryRawTransaction(wrapper, sumRawTx)
 	} else {
-		return decoder.CreateBTCSummaryRawTransaction(wrapper, sumRawTx)
+		return decoder.CreateZECSummaryRawTransaction(wrapper, sumRawTx)
 	}
 }
 

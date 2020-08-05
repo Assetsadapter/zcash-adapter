@@ -17,7 +17,7 @@ package zcash
 
 import (
 	"fmt"
-	"github.com/blocktree/go-owcdrivers/btcTransaction"
+	"github.com/Assetsadapter/zcash-adapter/zecTransaction"
 	"path/filepath"
 	"strings"
 	"time"
@@ -47,8 +47,9 @@ const (
 )
 
 var (
-	MainNetAddressPrefix = btcTransaction.BTCMainnetAddressPrefix
-	TestNetAddressPrefix = btcTransaction.BTCTestnetAddressPrefix
+	// Bech32Prefix 值随意填的，因为 zecTransaction.txOut 第 30 行处如果值为空的话则会错误的匹配进入bech32的地址解析导致报错
+	MainNetAddressPrefix = zecTransaction.ZECMainnetAddressPrefix
+	TestNetAddressPrefix = zecTransaction.ZECTestnetAddressPrefix
 )
 
 type WalletConfig struct {
@@ -118,9 +119,9 @@ type WalletConfig struct {
 	//是否支持omni
 	OmniSupport bool
 	//主网地址前缀
-	MainNetAddressPrefix btcTransaction.AddressPrefix
+	MainNetAddressPrefix zecTransaction.AddressPrefix
 	//测试网地址前缀
-	TestNetAddressPrefix btcTransaction.AddressPrefix
+	TestNetAddressPrefix zecTransaction.AddressPrefix
 	//小数位精度
 	Decimals int32
 	//最低手续费

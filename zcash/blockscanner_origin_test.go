@@ -15,7 +15,7 @@ package zcash
 //
 //func TestBTCBlockScanner_ScanBlockTaskOrigin(t *testing.T) {
 //
-//	bs := NewBTCBlockScanner(tw)
+//	bs := NewZECBlockScanner(tw)
 //	o := &btcBlockObserver{}
 //	bs.AddBTCBlockObserver(o)
 //

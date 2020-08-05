@@ -1,7 +1,7 @@
 package zcash
 
 //BlockScanNotificationObject 扫描被通知对象
-type BTCBlockScanNotificationObject interface {
+type ZECBlockScanNotificationObject interface {
 
 	//BlockScanNotify 新区块扫描完成通知
 	//@required
@@ -15,12 +15,12 @@ type BTCBlockScanNotificationObject interface {
 //}
 //
 ////SetScanBlockTaskOrigin 扫描任务
-//func (bs *BTCBlockScanner) SetScanBlockTaskOrigin() {
+//func (bs *ZECBlockScanner) SetScanBlockTaskOrigin() {
 //	bs.SetTask(bs.ScanBlockTaskOrigin)
 //}
 //
 ////ScanBlockTask 扫描任务
-//func (bs *BTCBlockScanner) ScanBlockTaskOrigin() {
+//func (bs *ZECBlockScanner) ScanBlockTaskOrigin() {
 //
 //	//获取本地区块高度
 //	blockHeader, err := bs.GetScannedBlockHeaderOrigin()
@@ -158,7 +158,7 @@ type BTCBlockScanNotificationObject interface {
 //}
 //
 ////ScanTxMemPool 扫描交易内存池
-//func (bs *BTCBlockScanner) ScanTxMemPoolOrigin() {
+//func (bs *ZECBlockScanner) ScanTxMemPoolOrigin() {
 //
 //	bs.wm.Log.Std.Info("block scanner scanning mempool ...")
 //
@@ -191,7 +191,7 @@ type BTCBlockScanNotificationObject interface {
 //
 ////BatchExtractTransaction 批量提取交易单
 ////zcash 1M的区块链可以容纳3000笔交易，批量多线程处理，速度更快
-//func (bs *BTCBlockScanner) BatchExtractTransactionOrigin(block *Block) error {
+//func (bs *ZECBlockScanner) BatchExtractTransactionOrigin(block *Block) error {
 //
 //	var (
 //		done       = 0 //完成标记
@@ -285,7 +285,7 @@ type BTCBlockScanNotificationObject interface {
 //}
 //
 ////AddObserver 添加观测者
-//func (bs *BTCBlockScanner) AddBTCBlockObserver(obj BTCBlockScanNotificationObject) error {
+//func (bs *ZECBlockScanner) AddBTCBlockObserver(obj ZECBlockScanNotificationObject) error {
 //	bs.Mu.Lock()
 //
 //	defer bs.Mu.Unlock()
@@ -293,37 +293,37 @@ type BTCBlockScanNotificationObject interface {
 //	if obj == nil {
 //		return nil
 //	}
-//	if _, exist := bs.BTCBlockObservers[obj]; exist {
+//	if _, exist := bs.ZECBlockObservers[obj]; exist {
 //		//已存在，不重复订阅
 //		return nil
 //	}
 //
-//	bs.BTCBlockObservers[obj] = true
+//	bs.ZECBlockObservers[obj] = true
 //
 //	return nil
 //}
 //
 ////RemoveObserver 移除观测者
-//func (bs *BTCBlockScanner) RemoveBTCBlockObserver(obj BTCBlockScanNotificationObject) error {
+//func (bs *ZECBlockScanner) RemoveBTCBlockObserver(obj ZECBlockScanNotificationObject) error {
 //	bs.Mu.Lock()
 //	defer bs.Mu.Unlock()
 //
-//	delete(bs.BTCBlockObservers, obj)
+//	delete(bs.ZECBlockObservers, obj)
 //
 //	return nil
 //}
 //
 ////newBlockNotify 获得新区块后，通知给观测者
-//func (bs *BTCBlockScanner) NewBTCBlockNotify(block *Block, isFork bool) {
+//func (bs *ZECBlockScanner) NewBTCBlockNotify(block *Block, isFork bool) {
 //	block.Fork = isFork
-//	for o, _ := range bs.BTCBlockObservers {
+//	for o, _ := range bs.ZECBlockObservers {
 //		o.BTCBlockScanNotify(block, block.txDetails)
 //	}
 //}
 //
 //
 ////GetScannedBlockHeader 获取当前扫描的区块头
-//func (bs *BTCBlockScanner) GetScannedBlockHeaderOrigin() (*openwallet.BlockHeader, error) {
+//func (bs *ZECBlockScanner) GetScannedBlockHeaderOrigin() (*openwallet.BlockHeader, error) {
 //
 //	var (
 //		blockHeight uint64 = 0
